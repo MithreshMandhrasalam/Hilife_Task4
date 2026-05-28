@@ -1,461 +1,405 @@
-'use strict';
-
-const USERS_KEY    = 'hilife_users';
-
+// Simple storage helpers
 function getUsers() {
-    try {
-        const data = JSON.parse(localStorage.getItem(USERS_KEY));
-        return (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
-    } catch {
-        return {};
+    var data = localStorage.getItem('hilife_users');
+    if (data) {
+        return JSON.parse(data);
     }
+    return {};
 }
 
 function saveUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.setItem('hilife_users', JSON.stringify(users));
 }
 
-
-
-function getGreeting() {
-    const hour = new Date().getHours();
-
-    if (hour >= 5 && hour < 12) {
-        return { label: 'Good Morning',   emoji: '🌅', bg: 'morning'   };
-    } else if (hour >= 12 && hour < 17) {
-        return { label: 'Good Afternoon', emoji: '☀️', bg: 'afternoon' };
-    } else if (hour >= 17 && hour < 21) {
-        return { label: 'Good Evening',   emoji: '🌇', bg: 'evening'   };
-    } else {
-        return { label: 'Good Night',     emoji: '🌙', bg: 'night'     };
+function getClockData() {
+    var data = localStorage.getItem('hilife_clock');
+    if (data) {
+        return JSON.parse(data);
     }
+    return {};
 }
 
-function formatCurrentTime() {
-    return new Date().toLocaleTimeString('en-IN', {
-        hour:   '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
+function saveClockData(data) {
+    localStorage.setItem('hilife_clock', JSON.stringify(data));
 }
 
+// Show greeting overlay with clock status
 function showGreeting(username, displayName) {
-    const greeting = getGreeting();
+    var hour = new Date().getHours();
+    var greetingText = "Good Night";
+    if (hour >= 5 && hour < 12) {
+        greetingText = "Good Morning";
+    } else if (hour >= 12 && hour < 17) {
+        greetingText = "Good Afternoon";
+    } else if (hour >= 17 && hour < 21) {
+        greetingText = "Good Evening";
+    }
 
-    const greetingEmoji = document.getElementById('greeting-emoji');
-    const greetingLabel = document.getElementById('greeting-label');
-    const greetingName = document.getElementById('greeting-name');
-    const greetingTime = document.getElementById('greeting-time');
-    const overlay = document.getElementById('greeting-overlay');
+    document.getElementById('greeting-label').textContent = greetingText + ",";
+    document.getElementById('greeting-name').textContent = displayName;
+    
+    // Live clock
+    var timeEl = document.getElementById('greeting-time');
+    function updateClock() {
+        timeEl.textContent = new Date().toLocaleTimeString('en-IN');
+    }
+    updateClock();
+    window.clockTimer = setInterval(updateClock, 1000);
 
-    if (greetingEmoji) greetingEmoji.textContent = greeting.emoji;
-    if (greetingLabel) greetingLabel.textContent = greeting.label + ',';
-    if (greetingName) greetingName.textContent = displayName;
-    if (greetingTime) greetingTime.textContent = formatCurrentTime();
-
+    // Save active user info on overlay element
+    var overlay = document.getElementById('greeting-overlay');
     if (overlay) {
         overlay.hidden = false;
-        overlay.dataset.username = username;
-        overlay.dataset.displayName = displayName;
-
-        const clockInterval = setInterval(() => {
-            const timeEl = document.getElementById('greeting-time');
-            if (timeEl) {
-                timeEl.textContent = formatCurrentTime();
-            } else {
-                clearInterval(clockInterval);
-            }
-        }, 1000);
-
-        overlay.dataset.clockInterval = clockInterval;
+        overlay.setAttribute('data-username', username);
     }
 
-    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
-    const lastClock = clockData[username];
-    const statusEl = document.getElementById('clock-status');
-    if (statusEl) {
-        if (lastClock) {
-            statusEl.textContent = `Clocked ${lastClock.status} at ${lastClock.time}`;
-            statusEl.style.color = lastClock.status === 'In' ? '#38a169' : '#e53e3e';
-        } else {
-            statusEl.textContent = 'Not clocked in yet';
-            statusEl.style.color = '#777';
-        }
-    }
+    // Render current clock status
+    var clockData = getClockData();
+    var userClock = clockData[username];
+    var statusEl = document.getElementById('clock-status');
+    var toggleBtn = document.getElementById('clock-toggle-btn');
 
-    const toggleBtn = document.getElementById('clock-toggle-btn');
-    if (toggleBtn) {
-        if (lastClock && lastClock.status === 'In') {
+    if (userClock) {
+        statusEl.textContent = "Clocked " + userClock.status + " at " + userClock.time;
+        if (userClock.status === 'In') {
+            statusEl.style.color = 'green';
             toggleBtn.textContent = 'Clock Out';
             toggleBtn.className = 'btn-primary btn-clock-out';
         } else {
+            statusEl.style.color = 'red';
             toggleBtn.textContent = 'Clock In';
             toggleBtn.className = 'btn-primary btn-clock-in';
         }
-    }
-}
-
-function handleClockIn() {
-    const overlay = document.getElementById('greeting-overlay');
-    const status = document.getElementById('clock-status');
-    if (!overlay) return;
-    const username = overlay.dataset.username;
-    if (!username) return;
-
-    const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
-    clockData[username] = { status: 'In', time: time };
-    localStorage.setItem('hilife_clock', JSON.stringify(clockData));
-
-    if (status) {
-        status.textContent = `Clocked In at ${time}`;
-        status.style.color = '#38a169';
-    }
-
-    const toggleBtn = document.getElementById('clock-toggle-btn');
-    if (toggleBtn) {
-        toggleBtn.textContent = 'Clock Out';
-        toggleBtn.className = 'btn-primary btn-clock-out';
-    }
-}
-
-function handleClockOut() {
-    const overlay = document.getElementById('greeting-overlay');
-    const status = document.getElementById('clock-status');
-    if (!overlay) return;
-    const username = overlay.dataset.username;
-    if (!username) return;
-
-    const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
-    clockData[username] = { status: 'Out', time: time };
-    localStorage.setItem('hilife_clock', JSON.stringify(clockData));
-
-    if (status) {
-        status.textContent = `Clocked Out at ${time}`;
-        status.style.color = '#e53e3e';
-    }
-
-    const toggleBtn = document.getElementById('clock-toggle-btn');
-    if (toggleBtn) {
+    } else {
+        statusEl.textContent = "Not clocked in yet";
+        statusEl.style.color = 'gray';
         toggleBtn.textContent = 'Clock In';
         toggleBtn.className = 'btn-primary btn-clock-in';
     }
 }
 
-function handleClockToggle() {
-    const overlay = document.getElementById('greeting-overlay');
-    if (!overlay) return;
-    const username = overlay.dataset.username;
-    if (!username) return;
-
-    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
-    const lastClock = clockData[username];
-    const isClockedIn = lastClock && lastClock.status === 'In';
-
-    if (isClockedIn) {
-        handleClockOut();
-    } else {
-        handleClockIn();
-    }
-}
-
 function closeGreeting() {
-    const overlay = document.getElementById('greeting-overlay');
+    var overlay = document.getElementById('greeting-overlay');
     if (overlay) {
-        clearInterval(Number(overlay.dataset.clockInterval));
         overlay.hidden = true;
     }
+    clearInterval(window.clockTimer);
 }
 
+// Clock toggle handler
+function handleClockToggle() {
+    var overlay = document.getElementById('greeting-overlay');
+    var username = overlay.getAttribute('data-username');
+    var statusEl = document.getElementById('clock-status');
+    var toggleBtn = document.getElementById('clock-toggle-btn');
+    
+    var time = new Date().toLocaleTimeString('en-IN');
+    var clockData = getClockData();
+    var userClock = clockData[username];
+    var isClockedIn = userClock && userClock.status === 'In';
+
+    if (isClockedIn) {
+        // Clock Out
+        clockData[username] = { status: 'Out', time: time };
+        statusEl.textContent = "Clocked Out at " + time;
+        statusEl.style.color = 'red';
+        toggleBtn.textContent = 'Clock In';
+        toggleBtn.className = 'btn-primary btn-clock-in';
+    } else {
+        // Clock In
+        clockData[username] = { status: 'In', time: time };
+        statusEl.textContent = "Clocked In at " + time;
+        statusEl.style.color = 'green';
+        toggleBtn.textContent = 'Clock Out';
+        toggleBtn.className = 'btn-primary btn-clock-out';
+    }
+    saveClockData(clockData);
+}
+
+// Switch between Sign In and Sign Up tabs
 function switchTab(tab) {
-    const signinTab  = document.getElementById('tab-signin');
-    const signupTab  = document.getElementById('tab-signup');
-    const signinPanel = document.getElementById('panel-signin');
-    const signupPanel = document.getElementById('panel-signup');
-    const indicator   = document.getElementById('tabIndicator');
-
-    if (signinTab && signupTab && signinPanel && signupPanel) {
-        if (tab === 'signin') {
-            signinTab.classList.add('active');
-            signupTab.classList.remove('active');
-            signinTab.setAttribute('aria-selected', 'true');
-            signupTab.setAttribute('aria-selected', 'false');
-            signinPanel.classList.add('active');
-            signupPanel.classList.remove('active');
-            if (indicator) indicator.classList.remove('right');
-        } else {
-            signupTab.classList.add('active');
-            signinTab.classList.remove('active');
-            signupTab.setAttribute('aria-selected', 'true');
-            signinTab.setAttribute('aria-selected', 'false');
-            signupPanel.classList.add('active');
-            signinPanel.classList.remove('active');
-            if (indicator) indicator.classList.add('right');
-        }
+    if (tab === 'signin') {
+        document.getElementById('tab-signin').classList.add('active');
+        document.getElementById('tab-signup').classList.remove('active');
+        document.getElementById('panel-signin').classList.add('active');
+        document.getElementById('panel-signup').classList.remove('active');
+    } else {
+        document.getElementById('tab-signin').classList.remove('active');
+        document.getElementById('tab-signup').classList.add('active');
+        document.getElementById('panel-signin').classList.remove('active');
+        document.getElementById('panel-signup').classList.add('active');
     }
-
-    clearErrors();
-}
-
-function setError(inputId, errId, message) {
-    const input = document.getElementById(inputId);
-    const err   = document.getElementById(errId);
-    if (input) {
-        input.classList.add('error');
-        input.classList.remove('valid');
+    // Clear all errors
+    var errorFields = document.getElementsByClassName('err');
+    for (var i = 0; i < errorFields.length; i++) {
+        errorFields[i].textContent = "";
     }
-    if (err) {
-        err.textContent = message;
+    var inputs = document.getElementsByTagName('input');
+    for (var j = 0; j < inputs.length; j++) {
+        inputs[j].classList.remove('error', 'valid');
     }
 }
 
-function setValid(inputId) {
-    const input = document.getElementById(inputId);
-    if (input) {
-        input.classList.remove('error');
-        input.classList.add('valid');
-    }
-}
-
-function clearErrors() {
-    document.querySelectorAll('.field input').forEach(el => {
-        el.classList.remove('error', 'valid');
-    });
-    document.querySelectorAll('.err').forEach(el => {
-        el.textContent = '';
-    });
-}
-
+// Toggle password visibility
 function togglePassword(inputId, btn) {
-    const input = document.getElementById(inputId);
-    if (input && btn) {
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = 'Hide';
-        } else {
-            input.type = 'password';
-            btn.textContent = 'Show';
-        }
+    var input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Hide';
+    } else {
+        input.type = 'password';
+        btn.textContent = 'Show';
     }
 }
 
+// Check password strength (simple length check)
 function checkPasswordStrength(password) {
-    let score = 0;
-    if (password.length >= 8)                   score++;
-    if (password.length >= 12)                  score++;
-    if (/[A-Z]/.test(password))                score++;
-    if (/[0-9]/.test(password))                score++;
-    if (/[^A-Za-z0-9]/.test(password))         score++;
+    var bar = document.getElementById('strength-bar');
+    var label = document.getElementById('strength-label');
+    
+    if (password.length === 0) {
+        bar.style.width = '0%';
+        label.textContent = '';
+        return;
+    }
 
-    const bar   = document.getElementById('strength-bar');
-    const label = document.getElementById('strength-label');
-
-    if (!bar || !label) return;
-
-    const levels = [
-        { pct: '0%',   color: 'transparent',   text: '' },
-        { pct: '25%',  color: '#f43f5e',        text: 'Weak' },
-        { pct: '50%',  color: '#f59e0b',        text: 'Fair' },
-        { pct: '75%',  color: '#22d3a5',        text: 'Strong' },
-        { pct: '100%', color: '#7c5cfc',        text: 'Very Strong' },
-    ];
-
-    const level = levels[Math.min(score, 4)];
-    bar.style.width      = password.length ? level.pct : '0%';
-    bar.style.background = level.color;
-    label.textContent    = password.length ? level.text : '';
-    label.style.color    = level.color;
+    if (password.length < 6) {
+        bar.style.width = '33%';
+        bar.style.background = 'red';
+        label.textContent = 'Weak';
+        label.style.color = 'red';
+    } else if (password.length < 10) {
+        bar.style.width = '66%';
+        bar.style.background = 'orange';
+        label.textContent = 'Medium';
+        label.style.color = 'orange';
+    } else {
+        bar.style.width = '100%';
+        bar.style.background = 'green';
+        label.textContent = 'Strong';
+        label.style.color = 'green';
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const pwInput = document.getElementById('signup-password');
-    if (pwInput) {
-        pwInput.addEventListener('input', () => checkPasswordStrength(pwInput.value));
+// Simple event listener for password strength input
+document.addEventListener('DOMContentLoaded', function() {
+    var pw = document.getElementById('signup-password');
+    if (pw) {
+        pw.addEventListener('input', function() {
+            checkPasswordStrength(pw.value);
+        });
     }
 });
 
+// Sign In Logic
 function handleSignIn(event) {
     event.preventDefault();
-    clearErrors();
+    
+    var usernameEl = document.getElementById('signin-username');
+    var passwordEl = document.getElementById('signin-password');
+    var usernameErr = document.getElementById('signin-username-err');
+    var passwordErr = document.getElementById('signin-password-err');
 
-    const usernameEl = document.getElementById('signin-username');
-    const passwordEl = document.getElementById('signin-password');
+    // Reset error display
+    usernameErr.textContent = "";
+    passwordErr.textContent = "";
+    usernameEl.classList.remove('error', 'valid');
+    passwordEl.classList.remove('error', 'valid');
 
-    if (!usernameEl || !passwordEl) return;
+    var username = usernameEl.value.trim();
+    var password = passwordEl.value;
+    var hasError = false;
 
-    const username = usernameEl.value.trim();
-    const password = passwordEl.value;
-
-    let valid = true;
-
-    if (!username) {
-        setError('signin-username', 'signin-username-err', 'Username is required.');
-        valid = false;
+    if (username === "") {
+        usernameErr.textContent = "Username is required.";
+        usernameEl.classList.add('error');
+        hasError = true;
     } else {
-        setValid('signin-username');
+        usernameEl.classList.add('valid');
     }
 
-    if (!password) {
-        setError('signin-password', 'signin-password-err', 'Password is required.');
-        valid = false;
+    if (password === "") {
+        passwordErr.textContent = "Password is required.";
+        passwordEl.classList.add('error');
+        hasError = true;
     } else {
-        setValid('signin-password');
+        passwordEl.classList.add('valid');
     }
 
-    if (!valid) return;
+    if (hasError) return;
 
-    const users = getUsers();
+    var users = getUsers();
+    var user = users[username];
 
-    if (!users[username]) {
-        setError('signin-username', 'signin-username-err', 'No account found with this username.');
+    if (!user) {
+        usernameErr.textContent = "No account found with this username.";
+        usernameEl.classList.add('error');
+        usernameEl.classList.remove('valid');
         return;
     }
 
-    if (users[username].password !== password) {
-        setError('signin-password', 'signin-password-err', 'Incorrect password. Please try again.');
+    if (user.password !== password) {
+        passwordErr.textContent = "Incorrect password. Please try again.";
+        passwordEl.classList.add('error');
+        passwordEl.classList.remove('valid');
         return;
     }
 
-    setValid('signin-username');
-    setValid('signin-password');
+    // Loading Animation
+    var btn = document.getElementById('signin-btn');
+    var btnText = btn.querySelector('.btn-text');
+    var loader = btn.querySelector('.btn-loader');
+    btn.disabled = true;
+    btnText.textContent = "Signing In...";
+    loader.hidden = false;
 
-    simulateLoading('signin-btn', 'Signing In…', () => {
-        const displayName = users[username].firstName + ' ' + users[username].lastName;
-        showGreeting(username, displayName);
-    });
+    setTimeout(function() {
+        btn.disabled = false;
+        btnText.textContent = "Sign In";
+        loader.hidden = true;
+        
+        var fullName = user.firstName + " " + user.lastName;
+        showGreeting(username, fullName);
+    }, 1200);
 }
 
+// Sign Up Logic
 function handleSignUp(event) {
     event.preventDefault();
-    clearErrors();
 
-    const firstNameEl = document.getElementById('signup-firstname');
-    const lastNameEl  = document.getElementById('signup-lastname');
-    const usernameEl  = document.getElementById('signup-username');
-    const emailEl     = document.getElementById('signup-email');
-    const passwordEl  = document.getElementById('signup-password');
-    const confirmEl   = document.getElementById('signup-confirm');
-
-    if (!firstNameEl || !lastNameEl || !usernameEl || !emailEl || !passwordEl || !confirmEl) return;
-
-    const firstName = firstNameEl.value.trim();
-    const lastName  = lastNameEl.value.trim();
-    const username  = usernameEl.value.trim();
-    const email     = emailEl.value.trim();
-    const password  = passwordEl.value;
-    const confirm   = confirmEl.value;
-
-    let valid = true;
-
-    if (!firstName) {
-        setError('signup-firstname', 'signup-firstname-err', 'First name is required.');
-        valid = false;
-    } else {
-        setValid('signup-firstname');
+    var fields = ['firstname', 'lastname', 'username', 'email', 'password', 'confirm'];
+    var hasError = false;
+    
+    // Clear previous highlights
+    for (var i = 0; i < fields.length; i++) {
+        var input = document.getElementById('signup-' + fields[i]);
+        var err = document.getElementById('signup-' + fields[i] + '-err');
+        input.classList.remove('error', 'valid');
+        err.textContent = "";
     }
 
-    if (!lastName) {
-        setError('signup-lastname', 'signup-lastname-err', 'Last name is required.');
-        valid = false;
+    var firstName = document.getElementById('signup-firstname').value.trim();
+    var lastName = document.getElementById('signup-lastname').value.trim();
+    var username = document.getElementById('signup-username').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var password = document.getElementById('signup-password').value;
+    var confirm = document.getElementById('signup-confirm').value;
+
+    if (firstName === "") {
+        document.getElementById('signup-firstname-err').textContent = "First name is required.";
+        document.getElementById('signup-firstname').classList.add('error');
+        hasError = true;
     } else {
-        setValid('signup-lastname');
+        document.getElementById('signup-firstname').classList.add('valid');
     }
 
-    if (!username) {
-        setError('signup-username', 'signup-username-err', 'Username is required.');
-        valid = false;
+    if (lastName === "") {
+        document.getElementById('signup-lastname-err').textContent = "Last name is required.";
+        document.getElementById('signup-lastname').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('signup-lastname').classList.add('valid');
+    }
+
+    if (username === "") {
+        document.getElementById('signup-username-err').textContent = "Username is required.";
+        document.getElementById('signup-username').classList.add('error');
+        hasError = true;
     } else if (username.length < 3) {
-        setError('signup-username', 'signup-username-err', 'Username must be at least 3 characters.');
-        valid = false;
+        document.getElementById('signup-username-err').textContent = "Username must be at least 3 characters.";
+        document.getElementById('signup-username').classList.add('error');
+        hasError = true;
     } else {
-        setValid('signup-username');
+        document.getElementById('signup-username').classList.add('valid');
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-        setError('signup-email', 'signup-email-err', 'Email is required.');
-        valid = false;
-    } else if (!emailRegex.test(email)) {
-        setError('signup-email', 'signup-email-err', 'Enter a valid email address.');
-        valid = false;
+    if (email === "") {
+        document.getElementById('signup-email-err').textContent = "Email is required.";
+        document.getElementById('signup-email').classList.add('error');
+        hasError = true;
+    } else if (email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+        document.getElementById('signup-email-err').textContent = "Enter a valid email address.";
+        document.getElementById('signup-email').classList.add('error');
+        hasError = true;
     } else {
-        setValid('signup-email');
+        document.getElementById('signup-email').classList.add('valid');
     }
 
-    if (!password) {
-        setError('signup-password', 'signup-password-err', 'Password is required.');
-        valid = false;
+    if (password === "") {
+        document.getElementById('signup-password-err').textContent = "Password is required.";
+        document.getElementById('signup-password').classList.add('error');
+        hasError = true;
     } else if (password.length < 6) {
-        setError('signup-password', 'signup-password-err', 'Password must be at least 6 characters.');
-        valid = false;
+        document.getElementById('signup-password-err').textContent = "Password must be at least 6 characters.";
+        document.getElementById('signup-password').classList.add('error');
+        hasError = true;
     } else {
-        setValid('signup-password');
+        document.getElementById('signup-password').classList.add('valid');
     }
 
-    if (!confirm) {
-        setError('signup-confirm', 'signup-confirm-err', 'Please confirm your password.');
-        valid = false;
+    if (confirm === "") {
+        document.getElementById('signup-confirm-err').textContent = "Please confirm your password.";
+        document.getElementById('signup-confirm').classList.add('error');
+        hasError = true;
     } else if (password !== confirm) {
-        setError('signup-confirm', 'signup-confirm-err', 'Passwords do not match.');
-        valid = false;
+        document.getElementById('signup-confirm-err').textContent = "Passwords do not match.";
+        document.getElementById('signup-confirm').classList.add('error');
+        hasError = true;
     } else {
-        setValid('signup-confirm');
+        document.getElementById('signup-confirm').classList.add('valid');
     }
 
-    if (!valid) return;
+    if (hasError) return;
 
-    const users = getUsers();
-
+    var users = getUsers();
     if (users[username]) {
-        setError('signup-username', 'signup-username-err', 'This username is already taken.');
+        document.getElementById('signup-username-err').textContent = "This username is already taken.";
+        document.getElementById('signup-username').classList.add('error');
+        document.getElementById('signup-username').classList.remove('valid');
         return;
     }
 
-    users[username] = { firstName, lastName, email, password };
+    // Save user
+    users[username] = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password
+    };
     saveUsers(users);
 
-    simulateLoading('signup-btn', 'Creating Account…', () => {
-        const displayName = firstName + ' ' + lastName;
-        showGreeting(username, displayName);
-    });
+    // Loading Animation
+    var btn = document.getElementById('signup-btn');
+    var btnText = btn.querySelector('.btn-text');
+    var loader = btn.querySelector('.btn-loader');
+    btn.disabled = true;
+    btnText.textContent = "Creating Account...";
+    loader.hidden = false;
+
+    setTimeout(function() {
+        btn.disabled = false;
+        btnText.textContent = "Create Account";
+        loader.hidden = true;
+        
+        var fullName = firstName + " " + lastName;
+        showGreeting(username, fullName);
+    }, 1200);
 }
 
-function simulateLoading(btnId, loadingText, callback) {
-    const btn      = document.getElementById(btnId);
-    if (!btn) return;
-    const textSpan = btn.querySelector('.btn-text');
-    const loader   = btn.querySelector('.btn-loader');
-
-    if (textSpan && loader) {
-        btn.disabled          = true;
-        textSpan.textContent  = loadingText;
-        loader.hidden         = false;
-
-        setTimeout(() => {
-            btn.disabled         = false;
-            loader.hidden        = true;
-            textSpan.textContent = btnId === 'signin-btn' ? 'Sign In' : 'Create Account';
-            callback();
-        }, 1200);
-    }
-}
-
+// Forgot Password
 function forgotPassword() {
-    const usernameEl = document.getElementById('signin-username');
-    if (!usernameEl) return;
-    const username = usernameEl.value.trim();
-    if (!username) {
-        alert('Please enter your username first, then click "Forgot password?"');
+    var username = document.getElementById('signin-username').value.trim();
+    if (username === "") {
+        alert("Please enter your username first, then click \"Forgot password?\"");
         return;
     }
 
-    const users = getUsers();
-    if (!users[username]) {
-        alert('No account found with the username "' + username + '".');
+    var users = getUsers();
+    var user = users[username];
+    if (!user) {
+        alert("No account found with the username \"" + username + "\".");
         return;
     }
 
-    alert('Password reset link has been sent to: ' + users[username].email + '\n\n(This is a demo — no actual email is sent.)');
+    alert("Password reset link has been sent to: " + user.email + "\n\n(This is a demo — no actual email is sent.)");
 }
