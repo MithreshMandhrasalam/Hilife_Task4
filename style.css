@@ -18,7 +18,7 @@ body {
     height: 100vh;
 }
 
-/* ---- Left branding panel ---- */
+
 .left-panel {
     width: 38%;
     background: #1a1a2e;
@@ -49,7 +49,7 @@ body {
 }
 
 
-/* ---- Right form panel ---- */
+
 .right-panel {
     flex: 1;
     display: flex;
@@ -65,7 +65,7 @@ body {
     max-width: 380px;
 }
 
-/* ---- Tabs ---- */
+
 .tabs {
     display: flex;
     border-bottom: 2px solid #e8e8e8;
@@ -96,7 +96,7 @@ body {
     color: #555;
 }
 
-/* ---- Panels ---- */
+
 .panel {
     display: none;
 }
@@ -105,7 +105,7 @@ body {
     display: block;
 }
 
-/* ---- Field ---- */
+
 .field {
     margin-bottom: 16px;
 }
@@ -144,7 +144,7 @@ body {
     border-color: #38a169;
 }
 
-/* ---- Password wrapper ---- */
+
 .pw-wrap {
     position: relative;
     display: flex;
@@ -161,7 +161,7 @@ body {
     background: none;
     border: none;
     font-size: 0.75rem;
-    color: #6c63ff;
+    color: #080808;
     cursor: pointer;
     font-weight: 500;
     font-family: inherit;
@@ -172,7 +172,7 @@ body {
     text-decoration: underline;
 }
 
-/* ---- Error text ---- */
+
 .err {
     display: block;
     font-size: 0.75rem;
@@ -181,14 +181,14 @@ body {
     min-height: 14px;
 }
 
-/* ---- Two-column field row ---- */
+
 .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
-/* ---- Remember row ---- */
+
 .row-between {
     display: flex;
     align-items: center;
@@ -232,7 +232,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* ---- Submit button ---- */
+
 .btn-primary {
     width: 100%;
     padding: 11px;
@@ -281,14 +281,14 @@ body {
     }
 }
 
-/* ---- Switch text ---- */
+
 .switch-text {
     text-align: center;
     font-size: 0.82rem;
     color: #777;
 }
 
-/* ---- Password strength ---- */
+
 .strength-track {
     height: 3px;
     background: #eee;
@@ -311,9 +311,7 @@ body {
     display: block;
 }
 
-/* ==============================================
-   GREETING MODAL
-   ============================================== */
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -372,9 +370,7 @@ body {
     font-weight: 500;
 }
 
-/* ==============================================
-   ACTIVE SESSIONS PANEL
-   ============================================== */
+
 .sessions-panel {
     position: fixed;
     bottom: 16px;
@@ -438,7 +434,7 @@ body {
     margin-left: auto;
 }
 
-/* ---- Responsive ---- */
+
 @media (max-width: 600px) {
     .left-panel {
         display: none;

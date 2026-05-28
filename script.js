@@ -1,21 +1,12 @@
-/* ============================================================
-   HILIFE.AI – Login / Sign-Up Page Logic
-   - Sign In & Sign Up with localStorage persistence
-   - Time-based greeting (Morning / Afternoon / Evening / Night)
-   - Multiple simultaneous active sessions support
-   ============================================================ */
+
 
 'use strict';
 
-// ──────────────────────────────────────────────
-// STORAGE KEY for registered users and sessions
-// ──────────────────────────────────────────────
+
 const USERS_KEY    = 'hilife_users';
 const SESSIONS_KEY = 'hilife_sessions';
 
-// ──────────────────────────────────────────────
-// UTILITY: Get users from localStorage
-// ──────────────────────────────────────────────
+
 function getUsers() {
     try {
         return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
@@ -28,9 +19,7 @@ function saveUsers(users) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-// ──────────────────────────────────────────────
-// UTILITY: Active sessions (multiple users)
-// ──────────────────────────────────────────────
+
 function getSessions() {
     try {
         return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
@@ -45,7 +34,7 @@ function saveSessions(sessions) {
 
 function addSession(username, displayName) {
     const sessions = getSessions();
-    // Avoid duplicate entry for same username in same browser
+
     const exists = sessions.find(s => s.username === username);
     if (!exists) {
         sessions.push({
@@ -90,9 +79,7 @@ function renderSessions() {
     panel.hidden = false;
 }
 
-// ──────────────────────────────────────────────
-// UTILITY: Time-based greeting
-// ──────────────────────────────────────────────
+
 function getGreeting() {
     const hour = new Date().getHours();
 
@@ -116,9 +103,7 @@ function formatCurrentTime() {
     });
 }
 
-// ──────────────────────────────────────────────
-// GREETING OVERLAY SHOW / CLOSE
-// ──────────────────────────────────────────────
+
 function showGreeting(displayName) {
     const greeting = getGreeting();
 
@@ -130,7 +115,7 @@ function showGreeting(displayName) {
     const overlay = document.getElementById('greeting-overlay');
     overlay.hidden = false;
 
-    // Live clock inside greeting
+
     const clockInterval = setInterval(() => {
         const timeEl = document.getElementById('greeting-time');
         if (timeEl) {
@@ -149,9 +134,7 @@ function closeGreeting() {
     overlay.hidden = true;
 }
 
-// ──────────────────────────────────────────────
-// TAB SWITCHER
-// ──────────────────────────────────────────────
+
 function switchTab(tab) {
     const signinTab  = document.getElementById('tab-signin');
     const signupTab  = document.getElementById('tab-signup');
@@ -180,9 +163,7 @@ function switchTab(tab) {
     clearErrors();
 }
 
-// ──────────────────────────────────────────────
-// ERROR HELPERS
-// ──────────────────────────────────────────────
+
 function setError(inputId, errId, message) {
     const input = document.getElementById(inputId);
     const err   = document.getElementById(errId);
@@ -206,9 +187,7 @@ function clearErrors() {
     });
 }
 
-// ──────────────────────────────────────────────
-// PASSWORD TOGGLE
-// ──────────────────────────────────────────────
+
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     if (input.type === 'password') {
@@ -220,9 +199,7 @@ function togglePassword(inputId, btn) {
     }
 }
 
-// ──────────────────────────────────────────────
-// PASSWORD STRENGTH METER
-// ──────────────────────────────────────────────
+
 function checkPasswordStrength(password) {
     let score = 0;
     if (password.length >= 8)                   score++;
@@ -251,20 +228,18 @@ function checkPasswordStrength(password) {
     label.style.color    = level.color;
 }
 
-// Wire up strength meter
+
 document.addEventListener('DOMContentLoaded', () => {
     const pwInput = document.getElementById('signup-password');
     if (pwInput) {
         pwInput.addEventListener('input', () => checkPasswordStrength(pwInput.value));
     }
 
-    // Render sessions badge on load
+
     renderSessions();
 });
 
-// ──────────────────────────────────────────────
-// SIGN IN
-// ──────────────────────────────────────────────
+
 function handleSignIn(event) {
     event.preventDefault();
     clearErrors();
@@ -298,7 +273,7 @@ function handleSignIn(event) {
         return;
     }
 
-    // Success
+
     setValid('signin-username');
     setValid('signin-password');
 
@@ -309,9 +284,7 @@ function handleSignIn(event) {
     });
 }
 
-// ──────────────────────────────────────────────
-// SIGN UP
-// ──────────────────────────────────────────────
+
 function handleSignUp(event) {
     event.preventDefault();
     clearErrors();
@@ -377,7 +350,7 @@ function handleSignUp(event) {
         return;
     }
 
-    // Save new user
+
     users[username] = { firstName, lastName, email, password };
     saveUsers(users);
 
@@ -388,9 +361,7 @@ function handleSignUp(event) {
     });
 }
 
-// ──────────────────────────────────────────────
-// LOADING SIMULATION
-// ──────────────────────────────────────────────
+
 function simulateLoading(btnId, loadingText, callback) {
     const btn      = document.getElementById(btnId);
     const textSpan = btn.querySelector('.btn-text');
@@ -408,9 +379,7 @@ function simulateLoading(btnId, loadingText, callback) {
     }, 1200);
 }
 
-// ──────────────────────────────────────────────
-// FORGOT PASSWORD (simple alert)
-// ──────────────────────────────────────────────
+
 function forgotPassword() {
     const username = document.getElementById('signin-username').value.trim();
     if (!username) {
