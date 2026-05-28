@@ -17,7 +17,7 @@ body {
 .left-panel {
   width: 38%;
   background: #000;
-  color: #fff;
+  color: #be1111;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +29,7 @@ body {
 }
 
 .logo-ai {
-  color: #e40d0d;
+  color: #1b0de4;
 }
 
 .right-panel {
@@ -230,20 +230,24 @@ body {
   .left-panel {
     display: none;
   }
+
   .right-panel {
     position: relative;
     padding-top: 80px;
   }
+
   .mobile-header {
     display: block;
     position: absolute;
     top: 20px;
     left: 20px;
   }
+
   .mobile-header .logo-text {
     font-size: 1.8rem;
     color: #000;
   }
+
   .field-row {
     flex-direction: column;
     gap: 0;

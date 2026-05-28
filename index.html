@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="page">
         <div class="left-panel">
@@ -35,7 +37,8 @@
                             <label>Password</label>
                             <div class="pw-wrap">
                                 <input type="password" id="signin-password" placeholder="Enter your password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signin-password', this)">Show</button>
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signin-password', this)">Show</button>
                             </div>
                         </div>
                         <div class="row-between">
@@ -45,7 +48,8 @@
                             <button type="button" class="text-link" onclick="forgotPassword()">Forgot password?</button>
                         </div>
                         <button type="submit" id="signin-btn" class="btn-primary">Sign In</button>
-                        <p class="switch-text">No account? <button type="button" class="text-link bold" onclick="switchTab('signup')">Sign Up</button></p>
+                        <p class="switch-text">No account? <button type="button" class="text-link bold"
+                                onclick="switchTab('signup')">Sign Up</button></p>
                     </form>
                 </div>
                 <div id="panel-signup" class="panel">
@@ -72,18 +76,21 @@
                             <label>Password</label>
                             <div class="pw-wrap">
                                 <input type="password" id="signup-password" placeholder="Create a password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signup-password', this)">Show</button>
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signup-password', this)">Show</button>
                             </div>
                         </div>
                         <div class="field">
                             <label>Confirm Password</label>
                             <div class="pw-wrap">
                                 <input type="password" id="signup-confirm" placeholder="Re-enter your password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signup-confirm', this)">Show</button>
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signup-confirm', this)">Show</button>
                             </div>
                         </div>
                         <button type="submit" id="signup-btn" class="btn-primary">Create Account</button>
-                        <p class="switch-text">Have an account? <button type="button" class="text-link bold" onclick="switchTab('signin')">Sign In</button></p>
+                        <p class="switch-text">Have an account? <button type="button" class="text-link bold"
+                                onclick="switchTab('signin')">Sign In</button></p>
                     </form>
                 </div>
             </div>
@@ -102,4 +109,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
