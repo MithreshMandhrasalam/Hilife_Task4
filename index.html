@@ -126,10 +126,7 @@
             <p class="modal-sub">You are signed in to <strong>HILIFE.AI</strong></p>
             <p class="modal-time" id="greeting-time"></p>
             <p class="clock-status" id="clock-status"></p>
-            <div class="clock-actions">
-                <button class="btn-primary btn-clock-in" onclick="handleClockIn()">Clock In</button>
-                <button class="btn-primary btn-clock-out" onclick="handleClockOut()">Clock Out</button>
-            </div>
+            <button id="clock-toggle-btn" class="btn-primary" onclick="handleClockToggle()"></button>
             <button class="btn-secondary" style="margin-top: 16px;" onclick="closeGreeting()">Go to Dashboard</button>
         </div>
     <script src="script.js"></script>

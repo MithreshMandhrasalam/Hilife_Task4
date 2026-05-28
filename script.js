@@ -83,6 +83,17 @@ function showGreeting(username, displayName) {
             statusEl.style.color = '#777';
         }
     }
+
+    const toggleBtn = document.getElementById('clock-toggle-btn');
+    if (toggleBtn) {
+        if (lastClock && lastClock.status === 'In') {
+            toggleBtn.textContent = 'Clock Out';
+            toggleBtn.className = 'btn-primary btn-clock-out';
+        } else {
+            toggleBtn.textContent = 'Clock In';
+            toggleBtn.className = 'btn-primary btn-clock-in';
+        }
+    }
 }
 
 function handleClockIn() {
@@ -101,6 +112,12 @@ function handleClockIn() {
         status.textContent = `Clocked In at ${time}`;
         status.style.color = '#38a169';
     }
+
+    const toggleBtn = document.getElementById('clock-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.textContent = 'Clock Out';
+        toggleBtn.className = 'btn-primary btn-clock-out';
+    }
 }
 
 function handleClockOut() {
@@ -118,6 +135,29 @@ function handleClockOut() {
     if (status) {
         status.textContent = `Clocked Out at ${time}`;
         status.style.color = '#e53e3e';
+    }
+
+    const toggleBtn = document.getElementById('clock-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.textContent = 'Clock In';
+        toggleBtn.className = 'btn-primary btn-clock-in';
+    }
+}
+
+function handleClockToggle() {
+    const overlay = document.getElementById('greeting-overlay');
+    if (!overlay) return;
+    const username = overlay.dataset.username;
+    if (!username) return;
+
+    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
+    const lastClock = clockData[username];
+    const isClockedIn = lastClock && lastClock.status === 'In';
+
+    if (isClockedIn) {
+        handleClockOut();
+    } else {
+        handleClockIn();
     }
 }
 
