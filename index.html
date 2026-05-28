@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="page">
         <div class="left-panel">
@@ -28,22 +26,17 @@
                     <button id="tab-signup" class="tab" onclick="switchTab('signup')">Sign Up</button>
                 </div>
                 <div id="panel-signin" class="panel active">
-                    <form id="signin-form" onsubmit="handleSignIn(event)" novalidate>
+                    <form id="signin-form" onsubmit="handleSignIn(event)">
                         <div class="field">
-                            <label for="signin-username">Username</label>
-                            <input type="text" id="signin-username" placeholder="Enter your username"
-                                autocomplete="username">
-                            <span class="err" id="signin-username-err"></span>
+                            <label>Username</label>
+                            <input type="text" id="signin-username" placeholder="Enter your username">
                         </div>
                         <div class="field">
-                            <label for="signin-password">Password</label>
+                            <label>Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signin-password" placeholder="Enter your password"
-                                    autocomplete="current-password">
-                                <button type="button" class="eye-btn"
-                                    onclick="togglePassword('signin-password', this)">Show</button>
+                                <input type="password" id="signin-password" placeholder="Enter your password">
+                                <button type="button" class="eye-btn" onclick="togglePassword('signin-password', this)">Show</button>
                             </div>
-                            <span class="err" id="signin-password-err"></span>
                         </div>
                         <div class="row-between">
                             <label class="check-label">
@@ -51,69 +44,46 @@
                             </label>
                             <button type="button" class="text-link" onclick="forgotPassword()">Forgot password?</button>
                         </div>
-                        <button type="submit" id="signin-btn" class="btn-primary">
-                            <span class="btn-text">Sign In</span>
-                            <span class="btn-loader" hidden></span>
-                        </button>
-                        <p class="switch-text">No account? <button type="button" class="text-link bold"
-                                onclick="switchTab('signup')">Sign Up</button></p>
+                        <button type="submit" id="signin-btn" class="btn-primary">Sign In</button>
+                        <p class="switch-text">No account? <button type="button" class="text-link bold" onclick="switchTab('signup')">Sign Up</button></p>
                     </form>
                 </div>
                 <div id="panel-signup" class="panel">
-                    <form id="signup-form" onsubmit="handleSignUp(event)" novalidate>
+                    <form id="signup-form" onsubmit="handleSignUp(event)">
                         <div class="field-row">
                             <div class="field">
-                                <label for="signup-firstname">First Name</label>
+                                <label>First Name</label>
                                 <input type="text" id="signup-firstname" placeholder="First name">
-                                <span class="err" id="signup-firstname-err"></span>
                             </div>
                             <div class="field">
-                                <label for="signup-lastname">Last Name</label>
+                                <label>Last Name</label>
                                 <input type="text" id="signup-lastname" placeholder="Last name">
-                                <span class="err" id="signup-lastname-err"></span>
                             </div>
                         </div>
                         <div class="field">
-                            <label for="signup-username">Username</label>
-                            <input type="text" id="signup-username" placeholder="Choose a username"
-                                autocomplete="username">
-                            <span class="err" id="signup-username-err"></span>
+                            <label>Username</label>
+                            <input type="text" id="signup-username" placeholder="Choose a username">
                         </div>
                         <div class="field">
-                            <label for="signup-email">Email</label>
-                            <input type="email" id="signup-email" placeholder="you@email.com" autocomplete="email">
-                            <span class="err" id="signup-email-err"></span>
+                            <label>Email</label>
+                            <input type="email" id="signup-email" placeholder="you@email.com">
                         </div>
                         <div class="field">
-                            <label for="signup-password">Password</label>
+                            <label>Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signup-password" placeholder="Create a password"
-                                    autocomplete="new-password">
-                                <button type="button" class="eye-btn"
-                                    onclick="togglePassword('signup-password', this)">Show</button>
+                                <input type="password" id="signup-password" placeholder="Create a password">
+                                <button type="button" class="eye-btn" onclick="togglePassword('signup-password', this)">Show</button>
                             </div>
-                            <span class="err" id="signup-password-err"></span>
-                            <div class="strength-track">
-                                <div class="strength-fill" id="strength-bar"></div>
-                            </div>
-                            <span class="strength-label" id="strength-label"></span>
                         </div>
                         <div class="field">
-                            <label for="signup-confirm">Confirm Password</label>
+                            <label>Confirm Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signup-confirm" placeholder="Re-enter your password"
-                                    autocomplete="new-password">
-                                <button type="button" class="eye-btn"
-                                    onclick="togglePassword('signup-confirm', this)">Show</button>
+                                <input type="password" id="signup-confirm" placeholder="Re-enter your password">
+                                <button type="button" class="eye-btn" onclick="togglePassword('signup-confirm', this)">Show</button>
                             </div>
-                            <span class="err" id="signup-confirm-err"></span>
                         </div>
-                        <button type="submit" id="signup-btn" class="btn-primary">
-                            <span class="btn-text">Create Account</span>
-                            <span class="btn-loader" hidden></span>
-                        </button>
-                        <p class="switch-text">Have an account? <button type="button" class="text-link bold"
-                                onclick="switchTab('signin')">Sign In</button></p>
+                        <button type="submit" id="signup-btn" class="btn-primary">Create Account</button>
+                        <p class="switch-text">Have an account? <button type="button" class="text-link bold" onclick="switchTab('signin')">Sign In</button></p>
                     </form>
                 </div>
             </div>
@@ -129,7 +99,7 @@
             <button id="clock-toggle-btn" class="btn-primary" onclick="handleClockToggle()"></button>
             <button class="btn-secondary" style="margin-top: 16px;" onclick="closeGreeting()">Go to Dashboard</button>
         </div>
+    </div>
     <script src="script.js"></script>
 </body>
-
 </html>
