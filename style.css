@@ -3,7 +3,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
     font-family: 'Inter', Arial, sans-serif;
     font-size: 14px;
@@ -12,13 +11,10 @@ body {
     height: 100vh;
     overflow: hidden;
 }
-
 .page {
     display: flex;
     height: 100vh;
 }
-
-
 .left-panel {
     width: 38%;
     background: #1a1a2e;
@@ -27,29 +23,22 @@ body {
     justify-content: center;
     padding: 40px;
 }
-
 .left-content {
     text-align: center;
     color: #fff;
 }
-
 .logo {
     margin-bottom: 18px;
 }
-
 .logo-text {
     font-size: 2.6rem;
     font-weight: 600;
     letter-spacing: 0.05em;
     color: #fff;
 }
-
 .logo-ai {
     color: #6c63ff;
 }
-
-
-
 .right-panel {
     flex: 1;
     display: flex;
@@ -59,19 +48,15 @@ body {
     padding: 40px 24px;
     overflow-y: auto;
 }
-
 .form-box {
     width: 100%;
     max-width: 380px;
 }
-
-
 .tabs {
     display: flex;
     border-bottom: 2px solid #e8e8e8;
     margin-bottom: 28px;
 }
-
 .tab {
     background: none;
     border: none;
@@ -85,31 +70,23 @@ body {
     margin-bottom: -2px;
     transition: color 0.2s, border-color 0.2s;
 }
-
 .tab.active {
     color: #1a1a2e;
     border-bottom-color: #6c63ff;
     font-weight: 600;
 }
-
 .tab:hover:not(.active) {
     color: #555;
 }
-
-
 .panel {
     display: none;
 }
-
 .panel.active {
     display: block;
 }
-
-
 .field {
     margin-bottom: 16px;
 }
-
 .field label {
     display: block;
     font-size: 0.82rem;
@@ -117,7 +94,6 @@ body {
     color: #444;
     margin-bottom: 6px;
 }
-
 .field input {
     width: 100%;
     padding: 10px 12px;
@@ -130,31 +106,24 @@ body {
     outline: none;
     transition: border-color 0.2s;
 }
-
 .field input:focus {
     border-color: #6c63ff;
     background: #fff;
 }
-
 .field input.error {
     border-color: #e53e3e;
 }
-
 .field input.valid {
     border-color: #38a169;
 }
-
-
 .pw-wrap {
     position: relative;
     display: flex;
     align-items: center;
 }
-
 .pw-wrap input {
     padding-right: 54px;
 }
-
 .eye-btn {
     position: absolute;
     right: 10px;
@@ -167,12 +136,9 @@ body {
     font-family: inherit;
     padding: 2px 4px;
 }
-
 .eye-btn:hover {
     text-decoration: underline;
 }
-
-
 .err {
     display: block;
     font-size: 0.75rem;
@@ -180,22 +146,17 @@ body {
     margin-top: 4px;
     min-height: 14px;
 }
-
-
 .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
-
-
 .row-between {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 18px;
 }
-
 .check-label {
     display: flex;
     align-items: center;
@@ -205,14 +166,12 @@ body {
     cursor: pointer;
     user-select: none;
 }
-
 .check-label input {
     width: 14px;
     height: 14px;
     cursor: pointer;
     accent-color: #6c63ff;
 }
-
 .text-link {
     background: none;
     border: none;
@@ -222,17 +181,13 @@ body {
     font-family: inherit;
     padding: 0;
 }
-
 .text-link:hover {
     text-decoration: underline;
 }
-
 .text-link.bold {
     font-weight: 600;
     font-size: 0.85rem;
 }
-
-
 .btn-primary {
     width: 100%;
     padding: 11px;
@@ -251,20 +206,16 @@ body {
     justify-content: center;
     gap: 8px;
 }
-
 .btn-primary:hover {
     background: #574fd6;
 }
-
 .btn-primary:active {
     background: #4840c0;
 }
-
 .btn-primary:disabled {
     background: #a9a4f0;
     cursor: not-allowed;
 }
-
 .btn-loader {
     width: 14px;
     height: 14px;
@@ -274,21 +225,14 @@ body {
     animation: spin 0.6s linear infinite;
     display: inline-block;
 }
-
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
-
-
 .switch-text {
     text-align: center;
     font-size: 0.82rem;
     color: #777;
 }
-
-
 .strength-track {
     height: 3px;
     background: #eee;
@@ -296,22 +240,18 @@ body {
     margin-top: 7px;
     overflow: hidden;
 }
-
 .strength-fill {
     height: 100%;
     width: 0;
     border-radius: 4px;
     transition: width 0.3s, background 0.3s;
 }
-
 .strength-label {
     font-size: 0.72rem;
     color: #999;
     margin-top: 3px;
     display: block;
 }
-
-
 .overlay {
     position: fixed;
     inset: 0;
@@ -321,11 +261,9 @@ body {
     justify-content: center;
     z-index: 999;
 }
-
 .overlay[hidden] {
     display: none !important;
 }
-
 .modal {
     background: #fff;
     border-radius: 10px;
@@ -335,12 +273,10 @@ body {
     width: 90%;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 }
-
 .modal-emoji {
     font-size: 2.8rem;
     margin-bottom: 12px;
 }
-
 .modal-greeting {
     font-size: 0.9rem;
     color: #777;
@@ -349,28 +285,23 @@ body {
     letter-spacing: 0.06em;
     font-weight: 500;
 }
-
 .modal-name {
     font-size: 1.8rem;
     font-weight: 600;
     color: #1a1a2e;
     margin-bottom: 10px;
 }
-
 .modal-sub {
     font-size: 0.85rem;
     color: #777;
     margin-bottom: 6px;
 }
-
 .modal-time {
     font-size: 1rem;
     color: #444;
     margin-bottom: 24px;
     font-weight: 500;
 }
-
-
 .sessions-panel {
     position: fixed;
     bottom: 16px;
@@ -383,11 +314,9 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     z-index: 100;
 }
-
 .sessions-panel[hidden] {
     display: none !important;
 }
-
 .sessions-title {
     font-size: 0.75rem;
     font-weight: 600;
@@ -396,14 +325,12 @@ body {
     letter-spacing: 0.06em;
     margin-bottom: 10px;
 }
-
 .sessions-list {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-
 .session-item {
     display: flex;
     align-items: center;
@@ -411,7 +338,6 @@ body {
     font-size: 0.85rem;
     color: #333;
 }
-
 .session-avatar {
     width: 28px;
     height: 28px;
@@ -425,7 +351,6 @@ body {
     font-weight: 600;
     flex-shrink: 0;
 }
-
 .session-dot {
     width: 7px;
     height: 7px;
@@ -433,17 +358,13 @@ body {
     border-radius: 50%;
     margin-left: auto;
 }
-
-
 @media (max-width: 600px) {
     .left-panel {
         display: none;
     }
-
     .right-panel {
         padding: 32px 20px;
     }
-
     .field-row {
         grid-template-columns: 1fr;
     }
