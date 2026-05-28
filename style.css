@@ -361,12 +361,26 @@ body {
     border-radius: 50%;
     margin-left: auto;
 }
+.mobile-header {
+    display: none;
+}
 @media (max-width: 600px) {
     .left-panel {
         display: none;
     }
     .right-panel {
-        padding: 32px 20px;
+        position: relative;
+        padding: 80px 20px 32px 20px;
+    }
+    .mobile-header {
+        display: block;
+        position: absolute;
+        top: 24px;
+        left: 24px;
+    }
+    .mobile-header .logo-text {
+        font-size: 1.8rem;
+        color: #1a1a2e;
     }
     .field-row {
         grid-template-columns: 1fr;
