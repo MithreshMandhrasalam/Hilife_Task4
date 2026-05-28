@@ -184,6 +184,10 @@ body {
   z-index: 99;
 }
 
+.overlay[hidden] {
+  display: none;
+}
+
 .modal {
   background: #fff;
   padding: 30px;
