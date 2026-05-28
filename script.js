@@ -1,15 +1,12 @@
-
-
 'use strict';
-
 
 const USERS_KEY    = 'hilife_users';
 const SESSIONS_KEY = 'hilife_sessions';
 
-
 function getUsers() {
     try {
-        return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+        const data = JSON.parse(localStorage.getItem(USERS_KEY));
+        return (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
     } catch {
         return {};
     }
@@ -19,10 +16,10 @@ function saveUsers(users) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-
 function getSessions() {
     try {
-        return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
+        const data = JSON.parse(localStorage.getItem(SESSIONS_KEY));
+        return Array.isArray(data) ? data : [];
     } catch {
         return [];
     }
@@ -52,6 +49,8 @@ function renderSessions() {
     const panel    = document.getElementById('sessions-panel');
     const list     = document.getElementById('sessions-list');
 
+    if (!panel || !list) return;
+
     if (sessions.length === 0) {
         panel.hidden = true;
         return;
@@ -79,7 +78,6 @@ function renderSessions() {
     panel.hidden = false;
 }
 
-
 function getGreeting() {
     const hour = new Date().getHours();
 
@@ -103,37 +101,43 @@ function formatCurrentTime() {
     });
 }
 
-
 function showGreeting(displayName) {
     const greeting = getGreeting();
 
-    document.getElementById('greeting-emoji').textContent = greeting.emoji;
-    document.getElementById('greeting-label').textContent = greeting.label;
-    document.getElementById('greeting-name').textContent  = displayName;
-    document.getElementById('greeting-time').textContent  = formatCurrentTime();
-
+    const greetingEmoji = document.getElementById('greeting-emoji');
+    const greetingLabel = document.getElementById('greeting-label');
+    const greetingName = document.getElementById('greeting-name');
+    const greetingTime = document.getElementById('greeting-time');
     const overlay = document.getElementById('greeting-overlay');
-    overlay.hidden = false;
 
+    if (greetingEmoji) greetingEmoji.textContent = greeting.emoji;
+    if (greetingLabel) greetingLabel.textContent = greeting.label + ',';
+    if (greetingName) greetingName.textContent = displayName;
+    if (greetingTime) greetingTime.textContent = formatCurrentTime();
 
-    const clockInterval = setInterval(() => {
-        const timeEl = document.getElementById('greeting-time');
-        if (timeEl) {
-            timeEl.textContent = formatCurrentTime();
-        } else {
-            clearInterval(clockInterval);
-        }
-    }, 1000);
+    if (overlay) {
+        overlay.hidden = false;
 
-    overlay.dataset.clockInterval = clockInterval;
+        const clockInterval = setInterval(() => {
+            const timeEl = document.getElementById('greeting-time');
+            if (timeEl) {
+                timeEl.textContent = formatCurrentTime();
+            } else {
+                clearInterval(clockInterval);
+            }
+        }, 1000);
+
+        overlay.dataset.clockInterval = clockInterval;
+    }
 }
 
 function closeGreeting() {
     const overlay = document.getElementById('greeting-overlay');
-    clearInterval(Number(overlay.dataset.clockInterval));
-    overlay.hidden = true;
+    if (overlay) {
+        clearInterval(Number(overlay.dataset.clockInterval));
+        overlay.hidden = true;
+    }
 }
-
 
 function switchTab(tab) {
     const signinTab  = document.getElementById('tab-signin');
@@ -142,63 +146,70 @@ function switchTab(tab) {
     const signupPanel = document.getElementById('panel-signup');
     const indicator   = document.getElementById('tabIndicator');
 
-    if (tab === 'signin') {
-        signinTab.classList.add('active');
-        signupTab.classList.remove('active');
-        signinTab.setAttribute('aria-selected', 'true');
-        signupTab.setAttribute('aria-selected', 'false');
-        signinPanel.classList.add('active');
-        signupPanel.classList.remove('active');
-        indicator.classList.remove('right');
-    } else {
-        signupTab.classList.add('active');
-        signinTab.classList.remove('active');
-        signupTab.setAttribute('aria-selected', 'true');
-        signinTab.setAttribute('aria-selected', 'false');
-        signupPanel.classList.add('active');
-        signinPanel.classList.remove('active');
-        indicator.classList.add('right');
+    if (signinTab && signupTab && signinPanel && signupPanel) {
+        if (tab === 'signin') {
+            signinTab.classList.add('active');
+            signupTab.classList.remove('active');
+            signinTab.setAttribute('aria-selected', 'true');
+            signupTab.setAttribute('aria-selected', 'false');
+            signinPanel.classList.add('active');
+            signupPanel.classList.remove('active');
+            if (indicator) indicator.classList.remove('right');
+        } else {
+            signupTab.classList.add('active');
+            signinTab.classList.remove('active');
+            signupTab.setAttribute('aria-selected', 'true');
+            signinTab.setAttribute('aria-selected', 'false');
+            signupPanel.classList.add('active');
+            signinPanel.classList.remove('active');
+            if (indicator) indicator.classList.add('right');
+        }
     }
 
     clearErrors();
 }
 
-
 function setError(inputId, errId, message) {
     const input = document.getElementById(inputId);
     const err   = document.getElementById(errId);
-    input.classList.add('error');
-    input.classList.remove('valid');
-    err.textContent = message;
+    if (input) {
+        input.classList.add('error');
+        input.classList.remove('valid');
+    }
+    if (err) {
+        err.textContent = message;
+    }
 }
 
 function setValid(inputId) {
     const input = document.getElementById(inputId);
-    input.classList.remove('error');
-    input.classList.add('valid');
+    if (input) {
+        input.classList.remove('error');
+        input.classList.add('valid');
+    }
 }
 
 function clearErrors() {
-    document.querySelectorAll('.input-field').forEach(el => {
+    document.querySelectorAll('.field input').forEach(el => {
         el.classList.remove('error', 'valid');
     });
-    document.querySelectorAll('.field-error').forEach(el => {
+    document.querySelectorAll('.err').forEach(el => {
         el.textContent = '';
     });
 }
 
-
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        btn.textContent = '🙈';
-    } else {
-        input.type = 'password';
-        btn.textContent = '👁';
+    if (input && btn) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = 'Hide';
+        } else {
+            input.type = 'password';
+            btn.textContent = 'Show';
+        }
     }
 }
-
 
 function checkPasswordStrength(password) {
     let score = 0;
@@ -228,35 +239,41 @@ function checkPasswordStrength(password) {
     label.style.color    = level.color;
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const pwInput = document.getElementById('signup-password');
     if (pwInput) {
         pwInput.addEventListener('input', () => checkPasswordStrength(pwInput.value));
     }
 
-
     renderSessions();
 });
-
 
 function handleSignIn(event) {
     event.preventDefault();
     clearErrors();
 
-    const username = document.getElementById('signin-username').value.trim();
-    const password = document.getElementById('signin-password').value;
+    const usernameEl = document.getElementById('signin-username');
+    const passwordEl = document.getElementById('signin-password');
+
+    if (!usernameEl || !passwordEl) return;
+
+    const username = usernameEl.value.trim();
+    const password = passwordEl.value;
 
     let valid = true;
 
     if (!username) {
         setError('signin-username', 'signin-username-err', 'Username is required.');
         valid = false;
+    } else {
+        setValid('signin-username');
     }
 
     if (!password) {
         setError('signin-password', 'signin-password-err', 'Password is required.');
         valid = false;
+    } else {
+        setValid('signin-password');
     }
 
     if (!valid) return;
@@ -273,7 +290,6 @@ function handleSignIn(event) {
         return;
     }
 
-
     setValid('signin-username');
     setValid('signin-password');
 
@@ -284,28 +300,40 @@ function handleSignIn(event) {
     });
 }
 
-
 function handleSignUp(event) {
     event.preventDefault();
     clearErrors();
 
-    const firstName = document.getElementById('signup-firstname').value.trim();
-    const lastName  = document.getElementById('signup-lastname').value.trim();
-    const username  = document.getElementById('signup-username').value.trim();
-    const email     = document.getElementById('signup-email').value.trim();
-    const password  = document.getElementById('signup-password').value;
-    const confirm   = document.getElementById('signup-confirm').value;
+    const firstNameEl = document.getElementById('signup-firstname');
+    const lastNameEl  = document.getElementById('signup-lastname');
+    const usernameEl  = document.getElementById('signup-username');
+    const emailEl     = document.getElementById('signup-email');
+    const passwordEl  = document.getElementById('signup-password');
+    const confirmEl   = document.getElementById('signup-confirm');
+
+    if (!firstNameEl || !lastNameEl || !usernameEl || !emailEl || !passwordEl || !confirmEl) return;
+
+    const firstName = firstNameEl.value.trim();
+    const lastName  = lastNameEl.value.trim();
+    const username  = usernameEl.value.trim();
+    const email     = emailEl.value.trim();
+    const password  = passwordEl.value;
+    const confirm   = confirmEl.value;
 
     let valid = true;
 
     if (!firstName) {
         setError('signup-firstname', 'signup-firstname-err', 'First name is required.');
         valid = false;
+    } else {
+        setValid('signup-firstname');
     }
 
     if (!lastName) {
         setError('signup-lastname', 'signup-lastname-err', 'Last name is required.');
         valid = false;
+    } else {
+        setValid('signup-lastname');
     }
 
     if (!username) {
@@ -314,6 +342,8 @@ function handleSignUp(event) {
     } else if (username.length < 3) {
         setError('signup-username', 'signup-username-err', 'Username must be at least 3 characters.');
         valid = false;
+    } else {
+        setValid('signup-username');
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -323,6 +353,8 @@ function handleSignUp(event) {
     } else if (!emailRegex.test(email)) {
         setError('signup-email', 'signup-email-err', 'Enter a valid email address.');
         valid = false;
+    } else {
+        setValid('signup-email');
     }
 
     if (!password) {
@@ -331,6 +363,8 @@ function handleSignUp(event) {
     } else if (password.length < 6) {
         setError('signup-password', 'signup-password-err', 'Password must be at least 6 characters.');
         valid = false;
+    } else {
+        setValid('signup-password');
     }
 
     if (!confirm) {
@@ -339,6 +373,8 @@ function handleSignUp(event) {
     } else if (password !== confirm) {
         setError('signup-confirm', 'signup-confirm-err', 'Passwords do not match.');
         valid = false;
+    } else {
+        setValid('signup-confirm');
     }
 
     if (!valid) return;
@@ -350,7 +386,6 @@ function handleSignUp(event) {
         return;
     }
 
-
     users[username] = { firstName, lastName, email, password };
     saveUsers(users);
 
@@ -361,27 +396,30 @@ function handleSignUp(event) {
     });
 }
 
-
 function simulateLoading(btnId, loadingText, callback) {
     const btn      = document.getElementById(btnId);
+    if (!btn) return;
     const textSpan = btn.querySelector('.btn-text');
     const loader   = btn.querySelector('.btn-loader');
 
-    btn.disabled          = true;
-    textSpan.textContent  = loadingText;
-    loader.hidden         = false;
+    if (textSpan && loader) {
+        btn.disabled          = true;
+        textSpan.textContent  = loadingText;
+        loader.hidden         = false;
 
-    setTimeout(() => {
-        btn.disabled         = false;
-        loader.hidden        = true;
-        textSpan.textContent = btnId === 'signin-btn' ? 'Sign In' : 'Create Account';
-        callback();
-    }, 1200);
+        setTimeout(() => {
+            btn.disabled         = false;
+            loader.hidden        = true;
+            textSpan.textContent = btnId === 'signin-btn' ? 'Sign In' : 'Create Account';
+            callback();
+        }, 1200);
+    }
 }
 
-
 function forgotPassword() {
-    const username = document.getElementById('signin-username').value.trim();
+    const usernameEl = document.getElementById('signin-username');
+    if (!usernameEl) return;
+    const username = usernameEl.value.trim();
     if (!username) {
         alert('Please enter your username first, then click "Forgot password?"');
         return;
