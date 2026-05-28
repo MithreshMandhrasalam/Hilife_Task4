@@ -101,7 +101,7 @@ function formatCurrentTime() {
     });
 }
 
-function showGreeting(displayName) {
+function showGreeting(username, displayName) {
     const greeting = getGreeting();
 
     const greetingEmoji = document.getElementById('greeting-emoji');
@@ -117,6 +117,8 @@ function showGreeting(displayName) {
 
     if (overlay) {
         overlay.hidden = false;
+        overlay.dataset.username = username;
+        overlay.dataset.displayName = displayName;
 
         const clockInterval = setInterval(() => {
             const timeEl = document.getElementById('greeting-time');
@@ -128,6 +130,55 @@ function showGreeting(displayName) {
         }, 1000);
 
         overlay.dataset.clockInterval = clockInterval;
+    }
+
+    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
+    const lastClock = clockData[username];
+    const statusEl = document.getElementById('clock-status');
+    if (statusEl) {
+        if (lastClock) {
+            statusEl.textContent = `Clocked ${lastClock.status} at ${lastClock.time}`;
+            statusEl.style.color = lastClock.status === 'In' ? '#38a169' : '#e53e3e';
+        } else {
+            statusEl.textContent = 'Not clocked in yet';
+            statusEl.style.color = '#777';
+        }
+    }
+}
+
+function handleClockIn() {
+    const overlay = document.getElementById('greeting-overlay');
+    const status = document.getElementById('clock-status');
+    if (!overlay) return;
+    const username = overlay.dataset.username;
+    if (!username) return;
+
+    const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
+    clockData[username] = { status: 'In', time: time };
+    localStorage.setItem('hilife_clock', JSON.stringify(clockData));
+
+    if (status) {
+        status.textContent = `Clocked In at ${time}`;
+        status.style.color = '#38a169';
+    }
+}
+
+function handleClockOut() {
+    const overlay = document.getElementById('greeting-overlay');
+    const status = document.getElementById('clock-status');
+    if (!overlay) return;
+    const username = overlay.dataset.username;
+    if (!username) return;
+
+    const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const clockData = JSON.parse(localStorage.getItem('hilife_clock')) || {};
+    clockData[username] = { status: 'Out', time: time };
+    localStorage.setItem('hilife_clock', JSON.stringify(clockData));
+
+    if (status) {
+        status.textContent = `Clocked Out at ${time}`;
+        status.style.color = '#e53e3e';
     }
 }
 
@@ -296,7 +347,7 @@ function handleSignIn(event) {
     simulateLoading('signin-btn', 'Signing In…', () => {
         const displayName = users[username].firstName + ' ' + users[username].lastName;
         addSession(username, displayName);
-        showGreeting(displayName);
+        showGreeting(username, displayName);
     });
 }
 
@@ -392,7 +443,7 @@ function handleSignUp(event) {
     simulateLoading('signup-btn', 'Creating Account…', () => {
         const displayName = firstName + ' ' + lastName;
         addSession(username, displayName);
-        showGreeting(displayName);
+        showGreeting(username, displayName);
     });
 }
 

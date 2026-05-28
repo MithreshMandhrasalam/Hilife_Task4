@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="page">
         <div class="left-panel">
@@ -29,14 +31,17 @@
                     <form id="signin-form" onsubmit="handleSignIn(event)" novalidate>
                         <div class="field">
                             <label for="signin-username">Username</label>
-                            <input type="text" id="signin-username" placeholder="Enter your username" autocomplete="username">
+                            <input type="text" id="signin-username" placeholder="Enter your username"
+                                autocomplete="username">
                             <span class="err" id="signin-username-err"></span>
                         </div>
                         <div class="field">
                             <label for="signin-password">Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signin-password" placeholder="Enter your password" autocomplete="current-password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signin-password', this)">Show</button>
+                                <input type="password" id="signin-password" placeholder="Enter your password"
+                                    autocomplete="current-password">
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signin-password', this)">Show</button>
                             </div>
                             <span class="err" id="signin-password-err"></span>
                         </div>
@@ -50,7 +55,8 @@
                             <span class="btn-text">Sign In</span>
                             <span class="btn-loader" hidden></span>
                         </button>
-                        <p class="switch-text">No account? <button type="button" class="text-link bold" onclick="switchTab('signup')">Sign Up</button></p>
+                        <p class="switch-text">No account? <button type="button" class="text-link bold"
+                                onclick="switchTab('signup')">Sign Up</button></p>
                     </form>
                 </div>
                 <div id="panel-signup" class="panel">
@@ -69,7 +75,8 @@
                         </div>
                         <div class="field">
                             <label for="signup-username">Username</label>
-                            <input type="text" id="signup-username" placeholder="Choose a username" autocomplete="username">
+                            <input type="text" id="signup-username" placeholder="Choose a username"
+                                autocomplete="username">
                             <span class="err" id="signup-username-err"></span>
                         </div>
                         <div class="field">
@@ -80,8 +87,10 @@
                         <div class="field">
                             <label for="signup-password">Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signup-password" placeholder="Create a password" autocomplete="new-password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signup-password', this)">Show</button>
+                                <input type="password" id="signup-password" placeholder="Create a password"
+                                    autocomplete="new-password">
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signup-password', this)">Show</button>
                             </div>
                             <span class="err" id="signup-password-err"></span>
                             <div class="strength-track">
@@ -92,8 +101,10 @@
                         <div class="field">
                             <label for="signup-confirm">Confirm Password</label>
                             <div class="pw-wrap">
-                                <input type="password" id="signup-confirm" placeholder="Re-enter your password" autocomplete="new-password">
-                                <button type="button" class="eye-btn" onclick="togglePassword('signup-confirm', this)">Show</button>
+                                <input type="password" id="signup-confirm" placeholder="Re-enter your password"
+                                    autocomplete="new-password">
+                                <button type="button" class="eye-btn"
+                                    onclick="togglePassword('signup-confirm', this)">Show</button>
                             </div>
                             <span class="err" id="signup-confirm-err"></span>
                         </div>
@@ -101,7 +112,8 @@
                             <span class="btn-text">Create Account</span>
                             <span class="btn-loader" hidden></span>
                         </button>
-                        <p class="switch-text">Have an account? <button type="button" class="text-link bold" onclick="switchTab('signin')">Sign In</button></p>
+                        <p class="switch-text">Have an account? <button type="button" class="text-link bold"
+                                onclick="switchTab('signin')">Sign In</button></p>
                     </form>
                 </div>
             </div>
@@ -109,12 +121,16 @@
     </div>
     <div id="greeting-overlay" class="overlay" hidden>
         <div class="modal">
-            <div class="modal-emoji" id="greeting-emoji">🌅</div>
             <p class="modal-greeting" id="greeting-label">Good Morning,</p>
             <h2 class="modal-name" id="greeting-name">User!</h2>
             <p class="modal-sub">You are signed in to <strong>HILIFE.AI</strong></p>
             <p class="modal-time" id="greeting-time"></p>
-            <button class="btn-primary" onclick="closeGreeting()">Go to Dashboard</button>
+            <p class="clock-status" id="clock-status"></p>
+            <div class="clock-actions">
+                <button class="btn-primary btn-clock-in" onclick="handleClockIn()">Clock In</button>
+                <button class="btn-primary btn-clock-out" onclick="handleClockOut()">Clock Out</button>
+            </div>
+            <button class="btn-secondary" style="margin-top: 16px;" onclick="closeGreeting()">Go to Dashboard</button>
         </div>
     </div>
     <div id="sessions-panel" class="sessions-panel" hidden>
@@ -123,4 +139,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

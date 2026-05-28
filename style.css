@@ -361,6 +361,60 @@ body {
     border-radius: 50%;
     margin-left: auto;
 }
+.clock-status {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 12px 0;
+}
+.clock-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+.clock-actions button {
+    flex: 1;
+    margin-bottom: 0;
+}
+.btn-clock-in {
+    background: #38a169;
+}
+.btn-clock-in:hover {
+    background: #2f855a;
+}
+.btn-clock-in:active {
+    background: #276749;
+}
+.btn-clock-out {
+    background: #e53e3e;
+}
+.btn-clock-out:hover {
+    background: #c53030;
+}
+.btn-clock-out:active {
+    background: #9b2c2c;
+}
+.btn-secondary {
+    width: 100%;
+    padding: 11px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    color: #333;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+.btn-secondary:active {
+    background: #d0d0d0;
+}
 .mobile-header {
     display: none;
 }
