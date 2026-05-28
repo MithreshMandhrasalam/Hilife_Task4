@@ -41,6 +41,7 @@ function handleClockToggle() {
 function closeGreeting() {
     document.getElementById('greeting-overlay').hidden = true;
     clearInterval(window.clockTimer);
+    localStorage.removeItem('currentUser');
 }
 
 function switchTab(tab) {
@@ -67,6 +68,13 @@ function handleSignIn(e) {
     var users = getUsers();
     if (!users[u] || users[u].password !== p) return alert("Invalid credentials");
 
+    if (document.getElementById('signin-remember').checked) {
+        localStorage.setItem('rememberedUsername', u);
+    } else {
+        localStorage.removeItem('rememberedUsername');
+    }
+    localStorage.setItem('currentUser', u);
+
     showGreeting(u, users[u].firstName + " " + users[u].lastName);
 }
 
@@ -88,6 +96,7 @@ function handleSignUp(e) {
 
     users[u] = { firstName: f, lastName: l, email: em, password: p };
     localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', u);
     showGreeting(u, f + " " + l);
 }
 
@@ -99,4 +108,18 @@ function forgotPassword() {
     if (!users[u]) return alert("No account found");
 
     alert("Reset link sent to: " + users[u].email);
+}
+
+var rem = localStorage.getItem('rememberedUsername');
+if (rem) {
+    document.getElementById('signin-username').value = rem;
+    document.getElementById('signin-remember').checked = true;
+}
+
+var currentUser = localStorage.getItem('currentUser');
+if (currentUser) {
+    var users = getUsers();
+    if (users[currentUser]) {
+        showGreeting(currentUser, users[currentUser].firstName + " " + users[currentUser].lastName);
+    }
 }
