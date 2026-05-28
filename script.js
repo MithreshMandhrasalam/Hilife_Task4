@@ -1,7 +1,6 @@
 'use strict';
 
 const USERS_KEY    = 'hilife_users';
-const SESSIONS_KEY = 'hilife_sessions';
 
 function getUsers() {
     try {
@@ -16,67 +15,7 @@ function saveUsers(users) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-function getSessions() {
-    try {
-        const data = JSON.parse(localStorage.getItem(SESSIONS_KEY));
-        return Array.isArray(data) ? data : [];
-    } catch {
-        return [];
-    }
-}
 
-function saveSessions(sessions) {
-    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
-}
-
-function addSession(username, displayName) {
-    const sessions = getSessions();
-
-    const exists = sessions.find(s => s.username === username);
-    if (!exists) {
-        sessions.push({
-            username,
-            displayName,
-            loginAt: Date.now()
-        });
-        saveSessions(sessions);
-    }
-    renderSessions();
-}
-
-function renderSessions() {
-    const sessions = getSessions();
-    const panel    = document.getElementById('sessions-panel');
-    const list     = document.getElementById('sessions-list');
-
-    if (!panel || !list) return;
-
-    if (sessions.length === 0) {
-        panel.hidden = true;
-        return;
-    }
-
-    list.innerHTML = '';
-    sessions.forEach(s => {
-        const initials = s.displayName
-            .split(' ')
-            .map(w => w[0])
-            .slice(0, 2)
-            .join('')
-            .toUpperCase();
-
-        const li = document.createElement('li');
-        li.className = 'session-item';
-        li.innerHTML = `
-            <div class="session-avatar">${initials}</div>
-            <span>${s.displayName}</span>
-            <div class="session-dot" title="Online"></div>
-        `;
-        list.appendChild(li);
-    });
-
-    panel.hidden = false;
-}
 
 function getGreeting() {
     const hour = new Date().getHours();
@@ -295,8 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pwInput) {
         pwInput.addEventListener('input', () => checkPasswordStrength(pwInput.value));
     }
-
-    renderSessions();
 });
 
 function handleSignIn(event) {
@@ -346,7 +283,6 @@ function handleSignIn(event) {
 
     simulateLoading('signin-btn', 'Signing In…', () => {
         const displayName = users[username].firstName + ' ' + users[username].lastName;
-        addSession(username, displayName);
         showGreeting(username, displayName);
     });
 }
@@ -442,7 +378,6 @@ function handleSignUp(event) {
 
     simulateLoading('signup-btn', 'Creating Account…', () => {
         const displayName = firstName + ' ' + lastName;
-        addSession(username, displayName);
         showGreeting(username, displayName);
     });
 }
